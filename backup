@@ -1,0 +1,42 @@
+try{chrome.webRequest.onBeforeRequest.addListener(
+    function (details) {
+        // Log absolutely EVERY network call that hits a "interpret_solution" string to diagnose
+        if (details.url.includes("interpret_solution")) {
+            console.log("🚨 Catch-all triggered! Found 'interpret_solution' in URL:", details.url);
+            if (details.method === "POST") {
+                console.log("🚀 SUCCESS! Post submission detected.");
+
+                // Let's print out what we found
+                if (details.requestBody) {
+                    console.log("Request payload data exists!");
+                    try {
+        
+                        // 2. Grab the raw byte buffer from Chrome
+                        const rawBytes = details.requestBody.raw[0].bytes;
+                        // 3. Decode the binary bytes back into a human-readable text string
+                        const decoder = new TextDecoder("utf-8");
+                        const decodedString = decoder.decode(rawBytes);
+                        // 4. Parse the text string into a clean JavaScript JSON object
+                        const payloadJson = JSON.parse(decodedString);
+
+                        console.log("✅ DECODED DATA SUCCESSFUL:");
+                        console.log("Full Payload JSON Object:", payloadJson);
+
+                        // This prints the exact code string you typed in the editor!
+                        console.log("Your Code String:", payloadJson.typed_code);
+
+                    } catch (error) {
+                        console.error("Failed to decode the request body:", error);
+                    }
+                }
+            }
+        }
+    },
+    // Loosen the filter slightly to catch any leetcode subpages hitting a submit endpoint
+    { urls: ["*://*.leetcode.com/problems/*"] },
+    ["requestBody"]
+);
+}
+catch(err){
+    console.error("❌ WebRequest listener setup failed:", err);
+}

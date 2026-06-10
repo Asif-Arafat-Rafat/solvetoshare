@@ -1,0 +1,38 @@
+<div id="extension_banner" style="
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    
+    /* Position parameters to dock it like a taskbar at the bottom center */
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* Taskbar sizing logic */
+    width: calc(100% - 40px); /* Stretches wide but keeps clean margins on the screen edges */
+    max-width: 800px;         /* Prevents it from looking awkwardly long on ultrawide monitors */
+    height: 50px;             /* Compact uniform taskbar height */
+    
+    /* Theme styling */
+    color: #ffffff;
+    background-color: rgba(26, 26, 26, 0.95); /* Deep dark background with a microscopic transparency edge */
+    border: 1px solid rgba(44, 187, 93, 0.4);   /* Thin, low-profile LeetCode green border framing */
+    border-radius: 25px;                       /* Pillshell pill design identical to modern OS taskbars */
+    padding: 0 24px;
+    
+    /* Layering and depth elements */
+    z-index: 2147483647;      /* Maximum allowed integer 32-bit z-index to stay above absolutely everything */
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5); /* Ambient drop shadow giving it a hovering elevation effect */
+    backdrop-filter: blur(8px); /* Optional: Adds a sleek glass-blur effect to elements passing underneath it */
+">
+    <h3 style="
+        margin: 0; 
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        font-size: 14px; 
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    ">
+        Congratulations! Your code passed all test cases! 🎉
+    </h3>
+</div>
