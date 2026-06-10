@@ -1,4 +1,4 @@
-const GeminiApiKey = "AQ.Ab8RN6LjcF1mC-zpkZxvIF_45ldkImz8f2oGHYynRMQXLA6eyQ";
+const GeminiApiKey = "";
 
 export async function evaluateMySolveGemini(solutionCode) {
     console.log("Evaluating your solution with Gemini...");
