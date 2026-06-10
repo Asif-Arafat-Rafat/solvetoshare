@@ -1,55 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolveToShare</title>
-    <link rel="stylesheet" href="popup.css">
-</head>
-<body>
-    <div id="initView">
-        <div id="errors" style="color: white;background-color: rgba(202, 24, 24, 0.897); font-weight: bold; position:absolute; top: 20px; left: 20px; right: 20px; z-index: 1000; height: 50px; overflow-y: auto; display:none; align-items: center; justify-content: center;box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(228, 213, 213, 0.582) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;border-radius: 4px;"> </div>
-        <main class="popup-shell">
-            <header class="popup-header">
-                <div class="logo-container">
-                    <img src="logo.png" alt="SolveToShare Logo" class="logo-img">
-                    <div class="brand-text">
-                        <span class="brand-solve">SOLVE</span><span class="brand-share">ToShare</span>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SolveToShare</title>
+        <link rel="stylesheet" href="popup.css">
+    </head>
+    <body>
+        <div id="loading">
+            <div class="loader">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>        
+        </div>
+        <div id="mainBody">
+            <div id="initView">
+                <div id="errors"
+                    style="color: white;background-color: rgba(202, 24, 24, 0.897); font-weight: bold; position:absolute; top: 20px; left: 20px; right: 20px; z-index: 1000; height: 50px; overflow-y: auto; display:none; align-items: center; justify-content: center;box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(228, 213, 213, 0.582) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;border-radius: 4px;">
+                </div>
+                <main class="popup-shell">
+                    <header class="popup-header">
+                        <div class="logo-container">
+                            <img src="logo.png" alt="SolveToShare Logo"
+                                class="logo-img">
+                            <div class="brand-text">
+                                <span class="brand-solve">SOLVE</span><span
+                                    class="brand-share">ToShare</span>
+                            </div>
+                        </div>
+                        <p class="popup-tagline">AI-Powered Portfolio Engine</p>
+                    </header>
+                    <hr class="divider">
+                    <section class="config-section">
+                        <div class="form-group">
+                            <label for="modelSelect">AI Engine Model</label>
+                            <select id="modelSelect" class="form-control">
+                                <option value="gemini">Gemini</option>
+                                <option value="gpt">GPT</option>
+                                <option value="claude">Claude </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="apiKeyInput">API Key</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="apiKeyInput"
+                                    class="form-control"
+                                    placeholder="••••••••••••••••">
+                                <button type="button" id="toggleKeyBtn"
+                                    class="icon-btn"
+                                    title="Toggle Visibility">👁️</button>
+                            </div>
+                        </div>
+                    </section>
+                    <footer class="popup-footer">
+                        <!-- <div class="status-container">
+                        <span class="status-indicator connected"></span>
+                        <p id="statusText" class="popup-copy">Ready on LeetCode</p>
+                    </div> -->
+                        <button id="actionButton" type="button"
+                            class="btn-primary">Check Status</button>
+                    </footer>
+                </main>
+            </div>
+            <div id="mainView" style="display:block;">
+                            <div id="errors"
+                    style="color: white;background-color: rgba(202, 24, 24, 0.897); font-weight: bold; position:absolute; top: 20px; left: 20px; right: 20px; z-index: 1000; height: 50px; overflow-y: auto; display:none; align-items: center; justify-content: center;box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(228, 213, 213, 0.582) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;border-radius: 4px;">
+                </div>
+                <main class="popup-shell">
+                    <header class="popup-header">
+                        <div class="logo-container">
+                            <img src="logo.png" alt="SolveToShare Logo"
+                                class="logo-img">
+                            <div class="brand-text">
+                                <span class="brand-solve">SOLVE</span><span
+                                    class="brand-share">ToShare</span>
+                            </div>
+                        </div>
+                        <p class="popup-tagline">AI-Powered Portfolio Engine</p>
+                    </header>
+                    <hr class="divider">
+                    <div id="ActiveArea">
+                        <h1 id="activeModelTitle"></h1>
+                        <button id="logoutBtn" type="button"
+                            class="btn-primary">Logout</button>
                     </div>
+                    </main>
                 </div>
-                <p class="popup-tagline">AI-Powered Portfolio Engine</p>
-            </header>
-            <hr class="divider">
-            <section class="config-section">
-                <div class="form-group">
-                    <label for="modelSelect">AI Engine Model</label>
-                    <select id="modelSelect" class="form-control">
-                        <option value="gemini">Gemini</option>
-                        <option value="gpt">GPT</option>
-                        <option value="claude">Claude </option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="apiKeyInput">API Key</label>
-                    <div class="input-wrapper">
-                        <input type="password" id="apiKeyInput" class="form-control" placeholder="••••••••••••••••">
-                        <button type="button" id="toggleKeyBtn" class="icon-btn" title="Toggle Visibility">👁️</button>
-                    </div>
-                </div>
-            </section>
-            <footer class="popup-footer">
-                <!-- <div class="status-container">
-                    <span class="status-indicator connected"></span>
-                    <p id="statusText" class="popup-copy">Ready on LeetCode</p>
-                </div> -->
-                <button id="actionButton" type="button" class="btn-primary">Check Status</button>
-            </footer>
-        </main>
-    </div>
-    <div id="mainView">
-        <h1>main run</h1>
-    </div>
-    <script src="popup.js"></script>
-    <script src="init.js"></script>
-</body>
+            </div>
+</div>
+        <script src="popup.js"></script>
+        <script src="init.js"></script>
+    </body>
 </html>

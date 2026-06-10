@@ -10,5 +10,14 @@
     } else {
         initView.style.display = "none";
         mainView.style.display = "block";
+        const activeModelTitle = document.getElementById("activeModelTitle");
+        activeModelTitle.textContent = `Active AI Model: ${data.primaryAiModel}`;
+        const logoutBtn = document.getElementById("logoutBtn");
+        logoutBtn.addEventListener("click",()=>{
+            chrome.storage.local.remove(["primaryAiModel","STSgeminiApiKey"],()=>{
+                console.log("✅ Cleared primaryAiModel and Gemini API key from storage. Logging out.");
+                location.reload();
+            })
+        })
     }
 })();

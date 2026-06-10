@@ -1,14 +1,15 @@
-/* Custom CSS Variables using the Logo Palette */
+/* ==========================================================================
+   SolveToShare Premium Dark Theme Palette (Directly matching Logo colors)
+   ========================================================================== */
 :root {
-    --bg-dark: #0f172a;
-    --bg-card: #1e293b;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --logo-blue: #0076df;
-    --logo-green: #22c55e;
-    --logo-red: #ef4444;
-    --border-color: #334155;
-    --input-focus: #38bdf8;
+    --bg-dark: #0b0f19;       /* Deep slate/midnight back */
+    --bg-card: #151d30;       /* Lighter slate for cards and controls */
+    --border-color: #242f47;  /* High contrast dark border */
+    --text-main: #f8fafc;     /* Clean crisp white */
+    --text-muted: #94a3b8;    /* Muted grey/blue label */
+    --logo-blue: #0076df;     /* Brand primary blue */
+    --logo-green: #22c55e;    /* Brand active green */
+    --error-red: #ef4444;     /* Clean alert red */
 }
 
 * {
@@ -25,6 +26,7 @@ body {
     overflow: hidden;
 }
 
+/* Master container shell */
 .popup-shell {
     padding: 20px;
     display: flex;
@@ -32,7 +34,32 @@ body {
     gap: 16px;
 }
 
-/* Header Styles */
+/* Error Banner overlay */
+.error-banner {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    background-color: rgba(239, 68, 68, 0.95);
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+/* ==========================================================================
+   Branding/Header Components
+   ========================================================================== */
 .popup-header {
     text-align: center;
 }
@@ -41,19 +68,19 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 4px;
 }
 
 .logo-img {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
 }
 
 .brand-text {
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-size: 1.35rem;
+    font-weight: 800;
     letter-spacing: -0.5px;
 }
 
@@ -66,10 +93,11 @@ body {
 }
 
 .popup-tagline {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    font-weight: 600;
 }
 
 .divider {
@@ -78,7 +106,9 @@ body {
     background: linear-gradient(90deg, transparent, var(--border-color), transparent);
 }
 
-/* Form / Configuration Styles */
+/* ==========================================================================
+   Form / Initial Setup View Components
+   ========================================================================== */
 .config-section {
     display: flex;
     flex-direction: column;
@@ -92,18 +122,20 @@ body {
 }
 
 .form-group label {
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 700;
     color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .form-control {
     width: 100%;
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: 8px;
     color: var(--text-main);
-    padding: 10px 12px;
+    padding: 10px 14px;
     font-size: 0.85rem;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -111,7 +143,7 @@ body {
 
 .form-control:focus {
     border-color: var(--logo-blue);
-    box-shadow: 0 0 0 3px rgba(0, 118, 223, 0.25);
+    box-shadow: 0 0 0 3px rgba(0, 118, 223, 0.2);
 }
 
 select.form-control {
@@ -119,11 +151,10 @@ select.form-control {
     appearance: none;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 24 24'><path d='M7 10l5 5 5-5z'/></svg>");
     background-repeat: no-repeat;
-    background-position: right 10px center;
+    background-position: right 12px center;
     padding-right: 30px;
 }
 
-/* Input Wrapper for API Key Visibility */
 .input-wrapper {
     position: relative;
     display: flex;
@@ -136,12 +167,12 @@ select.form-control {
 
 .icon-btn {
     position: absolute;
-    right: 10px;
+    right: 12px;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 0.9rem;
-    opacity: 0.6;
+    font-size: 1rem;
+    opacity: 0.5;
     transition: opacity 0.2s;
 }
 
@@ -149,64 +180,272 @@ select.form-control {
     opacity: 1;
 }
 
-/* Footer & Status Styles */
-.popup-footer {
-    margin-top: 8px;
+/* ==========================================================================
+   Screen 2: Active / Main View Components
+   ========================================================================== */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* System Active badge */
+.status-badge {
+    align-self: center;
+    background-color: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    padding: 6px 14px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pulse-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--logo-green);
+    box-shadow: 0 0 10px var(--logo-green);
+    animation: glow-pulse 1.8s infinite;
+}
+
+.badge-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--logo-green);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Glassmorphic Switch Card Container */
+.switch-card {
+    background: linear-gradient(145deg, var(--bg-card), #101625);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.status-container {
+.switch-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background-color: rgba(30, 41, 59, 0.5);
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px dashed var(--border-color);
+    gap: 10px;
 }
 
-.status-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: var(--text-muted);
+.switch-icon {
+    font-size: 1.2rem;
 }
 
-.status-indicator.connected {
-    background-color: var(--logo-green);
-    box-shadow: 0 0 8px var(--logo-green);
-}
-.status-indicator.disconnected {
-    background-color: var(--logo-red);
-    box-shadow: 0 0 8px var(--logo-red);
+.switch-title-group {
+    flex-grow: 1;
 }
 
-.popup-copy {
-    font-size: 0.8rem;
+.switch-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.switch-description {
+    font-size: 0.7rem;
     color: var(--text-muted);
 }
 
-/* Primary Button with Logo Gradient Accent */
+/* Switch (Toggle button) design */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #334155;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--logo-green);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--logo-green);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* Card bottom info tag */
+.switch-footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-text {
+    color: var(--logo-green);
+}
+
+/* Informative values */
+.info-card {
+    background-color: rgba(30, 41, 59, 0.3);
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+.info-label {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.info-value {
+    font-weight: 700;
+    color: var(--logo-blue);
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Buttons (Primary & Secondary Actions)
+   ========================================================================== */
+.popup-footer {
+    margin-top: 6px;
+}
+
 .btn-primary {
     width: 100%;
     background: linear-gradient(135deg, var(--logo-blue), var(--logo-green));
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     color: white;
     padding: 12px;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: transform 0.1s, filter 0.2s;
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+    transition: transform 0.1s, filter 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(34, 197, 94, 0.25);
 }
 
 .btn-primary:hover {
     filter: brightness(1.1);
+    box-shadow: 0 6px 18px rgba(34, 197, 94, 0.35);
 }
 
 .btn-primary:active {
     transform: scale(0.98);
+}
+
+.btn-secondary {
+    width: 100%;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-main);
+    padding: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: var(--border-color);
+    color: white;
+}
+
+/* Simple keyframe animations */
+@keyframes glow-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+}
+#loading{
+    background-color: rgba(255, 255, 255, 0.2);
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    z-index: 9999; 
+    width: 100%; 
+    height: 100%; 
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.loader {
+  display: flex;
+  align-items: center;
+}
+
+.bar {
+  display: inline-block;
+  width: 3px;
+  height: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  animation: scale-up4 1s linear infinite;
+}
+
+.bar:nth-child(2) {
+  height: 35px;
+  margin: 0 5px;
+  animation-delay: .25s;
+}
+
+.bar:nth-child(3) {
+  animation-delay: .5s;
+}
+
+@keyframes scale-up4 {
+  20% {
+    background-color: #ffff;
+    transform: scaleY(1.5);
+  }
+
+  40% {
+    transform: scaleY(1);
+  }
 }
