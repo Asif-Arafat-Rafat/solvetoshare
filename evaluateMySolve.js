@@ -1,4 +1,4 @@
-const GeminiApiKey = "";
+const GeminiApiKey = ""; // Do not hardcode your real key here!
 
 export async function evaluateMySolveGemini(solutionCode) {
     console.log("Evaluating your solution with Gemini...");
