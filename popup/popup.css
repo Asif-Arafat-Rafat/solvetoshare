@@ -6,6 +6,7 @@
     --text-muted: #94a3b8;
     --logo-blue: #0076df;
     --logo-green: #22c55e;
+    --logo-red: #ef4444;
     --border-color: #334155;
     --input-focus: #38bdf8;
 }
@@ -176,6 +177,10 @@ select.form-control {
 .status-indicator.connected {
     background-color: var(--logo-green);
     box-shadow: 0 0 8px var(--logo-green);
+}
+.status-indicator.disconnected {
+    background-color: var(--logo-red);
+    box-shadow: 0 0 8px var(--logo-red);
 }
 
 .popup-copy {
