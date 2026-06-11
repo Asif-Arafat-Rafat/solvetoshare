@@ -14,6 +14,7 @@ window.addEventListener('LEETCODE_RESPONSE_READY', (event) => {
         }
         if(event.detail.run_success){
                 const body = document.querySelector("body");
+                connsole.log("now showing banner");
                 showSuccess(body);
         }
     } catch (error) {

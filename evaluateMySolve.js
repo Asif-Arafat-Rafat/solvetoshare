@@ -1,11 +1,10 @@
+// evaluateMySolve.js
 
 async function getPromptTemplate() {
     const response = await fetch(chrome.runtime.getURL("prompt.txt"));
-
     if (!response.ok) {
         throw new Error(`Failed to load prompt.txt (${response.status})`);
     }
-
     return await response.text();
 }
 
@@ -27,14 +26,14 @@ export async function evaluateMySolveGemini(solutionCode) {
             "STSisRatingNeeded"
         ]);
 
+        // 🌟 Unified Format Fixes across all early validation checks:
         if (settings.primaryAiModel !== "gemini") {
-            return "Selected AI model is not Gemini.";
+            return ["Selected AI model is not Gemini.", 400];
         }
 
         const GeminiApiKey = settings.STSgeminiApiKey;
-
         if (!GeminiApiKey) {
-            return "⚠️ Gemini API key not found in storage.";
+            return ["⚠️ Gemini API key not found in storage.", 401];
         }
 
         const isSuggestionCodeNeeded = settings.STSisSuggestionCodeNeeded || false;
@@ -49,24 +48,15 @@ export async function evaluateMySolveGemini(solutionCode) {
             .replace("{isComplexityNeeded}", String(isComplexityNeeded))
             .replace("{isRatingNeeded}", String(isRatingNeeded));
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GeminiApiKey}`;
-
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GeminiApiKey}`;
+        
         const response = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                contents: [
-                    {
-                        parts: [
-                            {
-                                text: promptText
-                            }
-                        ]
-                    }
-                ],
-                // 🔥 FIX 1: Enforce strict application/json output mode from Gemini
+                contents: [{ parts: [{ text: promptText }] }],
                 generationConfig: {
                     responseMimeType: "application/json"
                 }
@@ -76,43 +66,35 @@ export async function evaluateMySolveGemini(solutionCode) {
         const data = await response.json();
         console.log("Status:", response.status);
 
+        // 🌟 Unified formatting for downstream API errors
         if (!response.ok) {
-            return `API ERROR ${response.status}: ${
-                data?.error?.message || JSON.stringify(data)
-            }`;
+            const errMsg = `API ERROR ${response.status}: ${data?.error?.message || JSON.stringify(data)}`;
+            return [errMsg, response.status];
         }
 
         if (data.error) {
-            return `GEMINI ERROR: ${
-                data.error.message || JSON.stringify(data.error)
-            }`;
+            const errMsg = `GEMINI ERROR: ${data.error.message || JSON.stringify(data.error)}`;
+            return [errMsg, response.status];
         }
 
-        // 🔥 FIX 2: Fixed the syntax crash. Extracted text once, safely.
         const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
         console.log("(evaluateJS)Extracted Text Response:", text || "No text returned from API.");
-        // chrome.runtime.sendMessage({
-        //     action:"AiResponse",
-        //     code:text
-        // })
+        
         if (!text) {
-            return `INVALID RESPONSE STRUCTURE:\n${JSON.stringify(data, null, 2)}`;
+            return [`INVALID RESPONSE STRUCTURE:\n${JSON.stringify(data, null, 2)}`, 502];
         }
 
         try {
-            // Because of responseMimeType, this will parse perfectly!
             const cleanJsonObj = JSON.parse(text);
             console.log("Clean Json Object:", cleanJsonObj);
-            
-            // Return either the stringified clean JSON or return the parsed object based on UI requirements
-            return text; 
+            return [text, response.status]; 
         } catch (jsonErr) {
-            console.error("JSON parsing fallback failure:", jsonErr);
-            return text;
+            console.log("JSON parsing fallback failure:", jsonErr);
+            return [text, response.status];
         }
 
     } catch (error) {
-        console.error("Fetch failed:", error);
-        return `NETWORK/JS ERROR: ${error.message}`;
+        console.log("Fetch failed:", error);
+        return [`NETWORK/JS ERROR: ${error.message}`, 500]; // 🌟 Clean array format fallback
     }
 }

@@ -10,8 +10,19 @@ chrome.webRequest.onBeforeRequest.addListener(
                     const payloadJson = JSON.parse(decoder.decode(rawBytes));
                     console.log("Your Code:\n", payloadJson.typed_code);
                     const text=await evaluateMySolveGemini(payloadJson.typed_code);
-                    console.log("hfound at helper:",text);
-                    chrome.tabs.sendMessage(details.tabId, { action: "AiResponse", code: text });
+                    console.log("found at helper:",text);
+                    
+                    if(text[1]==429){
+                        console.log("⚠️ Gemini API is currently overloaded (429 Too Many Requests). Please try again in a few moments.");
+                        return;
+                    }
+                    else if(text[1]==401){
+                        console.log("⚠️ Unauthorized access to Gemini API.");
+                        return;
+                    }
+                    else{
+                        chrome.tabs.sendMessage(details.tabId, { action: "AiResponse", status: text[1]||999, code: text[0]||"issue here"});
+                    }
                 }
             } catch (error) {
                 console.error("❌ Failed to decode outgoing web request payload:", error);
