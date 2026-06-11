@@ -37,8 +37,8 @@
                             <label for="modelSelect">AI Engine Model</label>
                             <select id="modelSelect" class="form-control">
                                 <option value="gemini">Gemini</option>
-                                <option value="gpt">GPT</option>
-                                <option value="claude">Claude </option>
+                                <!-- <option value="gpt">GPT</option>
+                                <option value="claude">Claude </option> -->
                             </select>
                         </div>
                         <div class="form-group">
@@ -64,9 +64,6 @@
                 </main>
             </div>
             <div id="mainView" style="display:block;">
-                            <div id="errors"
-                    style="color: white;background-color: rgba(202, 24, 24, 0.897); font-weight: bold; position:absolute; top: 20px; left: 20px; right: 20px; z-index: 1000; height: 50px; overflow-y: auto; display:none; align-items: center; justify-content: center;box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(228, 213, 213, 0.582) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;border-radius: 4px;">
-                </div>
                 <main class="popup-shell">
                     <header class="popup-header">
                         <div class="logo-container">
@@ -91,5 +88,14 @@
 </div>
         <script src="popup.js"></script>
         <script src="init.js"></script>
+        <!-- <script>
+            function reRender(model) {
+                if(model === "gemini"){
+                    document.getElementById("apiKeyInput").disabled = false;
+                }else{
+                    document.getElementById("apiKeyInput").disabled = true;
+                }
+            }
+        </script> -->
     </body>
 </html>

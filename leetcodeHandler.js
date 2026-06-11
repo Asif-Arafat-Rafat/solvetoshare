@@ -12,7 +12,7 @@ window.addEventListener('LEETCODE_RESPONSE_READY', (event) => {
             console.log("🔄 Extension was reloaded! Please refresh the page to reconnect the pipeline.");
             return;
         }
-        if(event.detail.state === "SUCCESS"){
+        if(event.detail.run_success){
                 const body = document.querySelector("body");
                 showSuccess(body);
         }

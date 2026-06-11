@@ -1,25 +1,56 @@
-chrome.storage.local.get(["primaryAiModel"],(data)=>{
-    if(data.primaryAiModel === "gemini"){
-        chrome.storage.local.get(["STSgeminiApiKey"],(data)=>{
-            const GeminiApiKey = data.STSgeminiApiKey;
-            if(!GeminiApiKey){
-                console.warn("⚠️ Gemini API key not found in storage. Please set it in the popup.");
-            } else {
-                console.log("✅ Gemini API key loaded successfully from storage.");
-            }
-        })
-    }
-})
 
+async function getPromptTemplate() {
+    const response = await fetch(chrome.runtime.getURL("prompt.txt"));
+
+    if (!response.ok) {
+        throw new Error(`Failed to load prompt.txt (${response.status})`);
+    }
+
+    return await response.text();
+}
+
+function getStorage(keys) {
+    return new Promise((resolve) => {
+        chrome.storage.local.get(keys, resolve);
+    });
+}
 
 export async function evaluateMySolveGemini(solutionCode) {
     console.log("Evaluating your solution with Gemini...");
 
-    const promptText = `Please review and simulate this code, check for bugs, and explain it:\n\n${solutionCode}`;
-
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GeminiApiKey}`;
-
     try {
+        const settings = await getStorage([
+            "primaryAiModel",
+            "STSgeminiApiKey",
+            "STSisSuggestionCodeNeeded",
+            "STSisComplexityNeeded",
+            "STSisRatingNeeded"
+        ]);
+
+        if (settings.primaryAiModel !== "gemini") {
+            return "Selected AI model is not Gemini.";
+        }
+
+        const GeminiApiKey = settings.STSgeminiApiKey;
+
+        if (!GeminiApiKey) {
+            return "⚠️ Gemini API key not found in storage.";
+        }
+
+        const isSuggestionCodeNeeded = settings.STSisSuggestionCodeNeeded || false;
+        const isComplexityNeeded = settings.STSisComplexityNeeded || false;
+        const isRatingNeeded = settings.STSisRatingNeeded || false;
+
+        const promptTemplate = await getPromptTemplate();
+
+        const promptText = promptTemplate
+            .replace("{user code}", solutionCode)
+            .replace("{isSuggestionCodeNeeded}", String(isSuggestionCodeNeeded))
+            .replace("{isComplexityNeeded}", String(isComplexityNeeded))
+            .replace("{isRatingNeeded}", String(isRatingNeeded));
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GeminiApiKey}`;
+
         const response = await fetch(url, {
             method: "POST",
             headers: {
@@ -28,37 +59,57 @@ export async function evaluateMySolveGemini(solutionCode) {
             body: JSON.stringify({
                 contents: [
                     {
-                        parts: [{ text: promptText }]
+                        parts: [
+                            {
+                                text: promptText
+                            }
+                        ]
                     }
-                ]
+                ],
+                // 🔥 FIX 1: Enforce strict application/json output mode from Gemini
+                generationConfig: {
+                    responseMimeType: "application/json"
+                }
             })
         });
 
         const data = await response.json();
-
-        // ✅ ALWAYS log full response first
         console.log("Status:", response.status);
-        console.log("Full Gemini Response:", JSON.stringify(data, null, 2));
 
-        // ❌ Handle HTTP-level errors
         if (!response.ok) {
-            return `API ERROR ${response.status}: ${data?.error?.message || JSON.stringify(data)}`;
+            return `API ERROR ${response.status}: ${
+                data?.error?.message || JSON.stringify(data)
+            }`;
         }
 
-        // ❌ Handle Gemini error format
         if (data.error) {
-            return `GEMINI ERROR: ${data.error.message || JSON.stringify(data.error)}`;
+            return `GEMINI ERROR: ${
+                data.error.message || JSON.stringify(data.error)
+            }`;
         }
 
-        // ❌ Validate structure safely
-        const text =
-            data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
+        // 🔥 FIX 2: Fixed the syntax crash. Extracted text once, safely.
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        console.log("(evaluateJS)Extracted Text Response:", text || "No text returned from API.");
+        // chrome.runtime.sendMessage({
+        //     action:"AiResponse",
+        //     code:text
+        // })
         if (!text) {
             return `INVALID RESPONSE STRUCTURE:\n${JSON.stringify(data, null, 2)}`;
         }
 
-        return text;
+        try {
+            // Because of responseMimeType, this will parse perfectly!
+            const cleanJsonObj = JSON.parse(text);
+            console.log("Clean Json Object:", cleanJsonObj);
+            
+            // Return either the stringified clean JSON or return the parsed object based on UI requirements
+            return text; 
+        } catch (jsonErr) {
+            console.error("JSON parsing fallback failure:", jsonErr);
+            return text;
+        }
 
     } catch (error) {
         console.error("Fetch failed:", error);

@@ -1,3 +1,6 @@
+// export function gotOutputFromGemini(gotResponse) {
+    
+// }
 async function showSuccess(body) {
     const fileUrl=chrome.runtime.getURL("banner.html");
     const res= await fetch(fileUrl);

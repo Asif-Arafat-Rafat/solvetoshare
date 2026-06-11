@@ -1,0 +1,44 @@
+{user code}
+this is a leetcode solve what i want you to do it make a list bullet of what i did good and what i did bad.. everypoint should give me a little detail about that and telling me the line with suggestion to improve if there is any.. also give these data below if true
+needed field:
+suggestion code:{isSuggestionCodeNeeded}
+complexity:{isComplexityNeeded}
+rating:{isRatingNeeded}(correctness, time comp,space comp, readability all out of 10)
+
+no introduction and conclusion...or small talk.
+make it like a json file the key in the what i did good and bad (there can be more than one for each good or bad )is named point and value is detail,
+{
+"profile": {
+"strengths": [
+{
+"point": "Brief summary of what you did well",
+"detail": "Detailed explanation of why this approach works or what logic was correct."
+}
+],
+"areas_for_improvement": [
+{
+"point": "Brief summary of the issue or anti-pattern",
+"detail": "Detailed explanation of why this causes performance, logic, or readability issues.",
+"line": "Specific line number(s) or code block containing the issue",
+"suggestion": "Actionable advice or quick fix to resolve the issue"
+}
+]
+},
+"metrics": {
+"ratings": {
+"correctness": "Score out of 10",
+"time_complexity": "Score out of 10",
+"space_complexity": "Score out of 10",
+"readability": "Score out of 10"
+},
+"complexity_analysis": {
+"time": "Big-O notation and explanation of the bottleneck",
+"space": "Big-O notation and explanation of memory overhead"
+}
+},
+"optimized_implementation": {
+"language": "The programming language used (e.g., C++)",
+"code": "The complete, refactored production-ready code block"
+}
+}
+ignore all data that are false in the needed fields.
