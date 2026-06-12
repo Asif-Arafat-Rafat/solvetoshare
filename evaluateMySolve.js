@@ -48,7 +48,7 @@ export async function evaluateMySolveGemini(solutionCode) {
             .replace("{isComplexityNeeded}", String(isComplexityNeeded))
             .replace("{isRatingNeeded}", String(isRatingNeeded));
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GeminiApiKey}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GeminiApiKey}`;
         
         const response = await fetch(url, {
             method: "POST",

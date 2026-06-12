@@ -4,7 +4,6 @@ const script = document.createElement('script');
 script.src = chrome.runtime.getURL('inject.js');
 (document.head || document.documentElement).appendChild(script);
 script.onload = () => script.remove();
-
 // 2. Listen for the wide-open event stream coming from inject.js
 window.addEventListener('LEETCODE_RESPONSE_READY', (event) => {
     try {
@@ -14,7 +13,7 @@ window.addEventListener('LEETCODE_RESPONSE_READY', (event) => {
         }
         if(event.detail.run_success){
                 const body = document.querySelector("body");
-                connsole.log("now showing banner");
+                console.log("now showing banner");
                 showSuccess(body);
         }
     } catch (error) {

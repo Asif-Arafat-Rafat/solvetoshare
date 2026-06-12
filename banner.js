@@ -1,7 +1,13 @@
 // Inside banner.js
-import { check } from "./check.js";
 async function showSuccess(body) {
-    check();
+    const storage = await chrome.storage.session.get(["ApiStatus"]);
+    
+    // 2. Guard Clause: If a blocked status is already cached from a recent error, stop!
+    if (storage.ApiStatus == 429 || storage.ApiStatus == 401) {
+        alert(`Banner canceled: Previous request failed with status ${storage.ApiStatus}`);
+        console.log(`Banner canceled: Previous request failed with status ${storage.ApiStatus}`);
+        return null; 
+    }
     const fileUrl = chrome.runtime.getURL("banner.html");
     const res = await fetch(fileUrl);
     const htmlContent = await res.text();
@@ -46,34 +52,34 @@ async function successFullyResponded(body, aiCodeData) {
 }
 
 // Fixed Message Listener
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === "AiResponse") {
-        console.log("Got AI Response payload.");
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//     if (message.action === "AiResponse") {
+//         console.log("Got AI Response payload.");
 
-        // 🌟 FIX 1: Vaporize the loading banner instantly BEFORE injecting new nodes
-        // This eliminates DOM selector collisions completely
-        const loadingBanner = document.querySelector('#extension_banner');
-        if(loadingBanner) {
-            loadingBanner.style.display='none'; // Immediate visual hide
-        }
+//         // 🌟 FIX 1: Vaporize the loading banner instantly BEFORE injecting new nodes
+//         // This eliminates DOM selector collisions completely
+//         const loadingBanner = document.querySelector('#extension_banner');
+//         if(loadingBanner) {
+//             loadingBanner.style.display='none'; // Immediate visual hide
+//         }
         
-        if (message.status == 503) {
-            alert("⚠️ Gemini API is currently overloaded (503 Service Unavailable). Please try again in a few moments.");
-            sendResponse({ status: "acknowledged" });
-            return;
-        }
-        if (message.status == 429) {
-            alert("You exceeded your current quota.");
-            sendResponse({ status: "acknowledged" });
-            return;
-        }
+//         if (message.status == 503) {
+//             alert("⚠️ Gemini API is currently overloaded (503 Service Unavailable). Please try again in a few moments.");
+//             sendResponse({ status: "acknowledged" });
+//             return;
+//         }
+//         if (message.status == 429) {
+//             alert("You exceeded your current quota.");
+//             sendResponse({ status: "acknowledged" });
+//             return;
+//         }
         
-        // 🌟 FIX 2: Correctly pass and map the AI payload text data
-        successFullyResponded(document.body, message.code);
+//         // 🌟 FIX 2: Correctly pass and map the AI payload text data
+//         successFullyResponded(document.body, message.code);
         
-        sendResponse({ status: "rendered" });
-    }
-});
+//         sendResponse({ status: "rendered" });
+//     }
+// });
 
 async function runPipeline() {
     await showSuccess(document.body);

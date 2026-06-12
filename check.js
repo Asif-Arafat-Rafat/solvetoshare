@@ -1,3 +1,3 @@
-export function check() {
+function check() {
     console.log("Checking your solution...");
 }
