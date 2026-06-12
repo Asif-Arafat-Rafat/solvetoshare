@@ -33,7 +33,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["inject.js","banner.html"],
+      "resources": ["inject.js","banner.html","bannerResponse.html"],
       "matches": ["*://*.leetcode.com/*"],
       "run_at": "document_start"
     }

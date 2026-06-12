@@ -13,7 +13,8 @@ chrome.webRequest.onBeforeRequest.addListener(
                     console.log("Your Code:\n", payloadJson.typed_code);
                     const text=await evaluateMySolveGemini(payloadJson.typed_code);
                     console.log("found at helper:",text);
-                    await chrome.storage.session.set({ ApiStatus: text[1] });
+                    try{await chrome.storage.session.set({ ApiStatus: text[1] });}
+                    catch(err){console.error("Failed to set ApiStatus in session storage:", err);}
                     if(text[1]==429){
                         console.log("⚠️ Gemini API is currently overloaded (429 Too Many Requests). Please try again in a few moments.");
                         return;
