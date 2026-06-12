@@ -10,108 +10,95 @@
                 transform: scaleY(1);
             }
         }
-        .cssbuttons-io {
-            position: relative;
-            font-family: inherit;
-            font-weight: 500;
-            font-size: 18px;
-            letter-spacing: 0.05em;
-            border-radius: 0.8em;
-            cursor: pointer;
+/* From Uiverse.io by satyamchaudharydev */ 
+        button {
+            padding: 0;
+            margin: 0;
             border: none;
-            background: linear-gradient(to right, #8e2de2, #ffff00);
-            color: ghostwhite;
+            background: none;
+            cursor: pointer;
+        }
+
+        button {
+            --primary-color: #111;
+            --hovered-color: #c84747;
+            position: relative;
+            display: flex;
+            font-weight: 600;
+            font-size: 20px;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        button p {
+            margin: 0;
+            position: relative;
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+
+        button::after {
+            position: absolute;
+            content: "";
+            width: 0;
+            left: 0;
+            bottom: -7px;
+            background: var(--hovered-color);
+            height: 2px;
+            transition: 0.3s ease-out;
+        }
+
+        button p::before {
+            position: absolute;
+            /*   box-sizing: border-box; */
+            content: attr(data-text);
+            width: 0%;
+            inset: 0;
+            color: var(--hovered-color);
             overflow: hidden;
+            transition: 0.3s ease-out;
         }
 
-        .cssbuttons-io svg {
-        width: 1.2em;
-        height: 1.2em;
-        margin-right: 0.5em;
+        button:hover::after {
+            width: 100%;
         }
 
-        .cssbuttons-io span {
-        position: relative;
-        z-index: 10;
-        transition: color 0.4s;
-        display: inline-flex;
-        align-items: center;
-        padding: 0.8em 1.2em 0.8em 1.05em;
+        button:hover p::before {
+            width: 100%;
         }
 
-        .cssbuttons-io::before,
-        .cssbuttons-io::after {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
+        button:hover svg {
+            transform: translateX(4px);
+            color: var(--hovered-color);
         }
 
-        .cssbuttons-io::before {
-        content: "";
-        background: #000;
-        width: 120%;
-        left: -10%;
-        transform: skew(30deg);
-        transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+        button svg {
+            color: var(--primary-color);
+            transition: 0.2s;
+            position: relative;
+            width: 15px;
+            transition-delay: 0.2s;
         }
-
-        .cssbuttons-io:hover::before {
-        transform: translate3d(100%, 0, 0);
+        #Response_banner{
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            width: auto;
+            height: auto;
+            background-color: rgba(26, 26, 26, 0.95);
+            border: 1px solid rgba(44, 187, 93, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2147483646; /* Just below the extension banner */
         }
-
-        .cssbuttons-io:active {
-        transform: scale(0.95);
-        }
-        .icon-btn-container {
-        position: relative;
-        display: flex;
-        gap: 10px;
-        }
-
-        .icon-btn {
-        font-size: 2.4rem;
-        text-align: center;
-        width: 65px;
-        height: 65px;
-        border-radius: 50%;
-        color: #ffffff;
-        border: 5px solid #fff;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        outline: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
-        }
-
-        .icon-btn:active {
-        transform: scale(0.95);
-        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
-        }
-
-        .icon-btn-red {
-        background-color: #f73a45;
-        box-shadow: 0px 0px 5px #f73a45;
-        }
-
-        .icon-btn-green {
-        background-color: #3eac21;
-        box-shadow: 0px 0px 5px #3eac21;
-        }
-
-        .icon-btn-green svg,
-        .icon-btn-red svg {
-        width: 35px;
-        height: 35px;
-        }
-
     </style>
 </head>
+<div id="Response_banner">
 
+</div>
 <div id="extension_banner" style="
     display: flex;
     align-items: center;
@@ -175,34 +162,39 @@
             Evaluating your Code......
         </h3>
     </div>
-    <div id="postResponse" style="display: none;">
-    <h3 style="
-        margin: 0; 
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-        font-size: 14px; 
-        font-weight: 600;
-        letter-spacing: 0.3px;
+<div id="postResponse" style="
+    display:none;
+    align-items:center;
+    gap:12px;
+">
+    <span style="
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+        font-size:14px;
+        font-weight:600;
+        letter-spacing:0.3px;
     ">
         Evaluation Complete!
-        <!-- From Uiverse.io by adamgiebl -->
-        <button class="cssbuttons-io">
-            <span><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 0h24v24H0z" fill="none"></path>
-                    <path
-                        d="M24 12l-5.657 5.657-1.414-1.414L21.172 12l-4.243-4.243 1.414-1.414L24 12zM2.828 12l4.243 4.243-1.414 1.414L0 12l5.657-5.657L7.07 7.757 2.828 12zm6.96 9H7.66l6.552-18h2.128L9.788 21z"
-                        fill="currentColor"></path>
-                </svg>
-                Code</span>
-        </button>
-        <button class="icon-btn icon-btn-red">
-            <svg viewBox="0 0 16 16" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M5.1716 8.00003L1.08582 3.91424L3.91424 1.08582L8.00003 5.1716L12.0858 1.08582L14.9142 3.91424L10.8285 8.00003L14.9142 12.0858L12.0858 14.9142L8.00003 10.8285L3.91424 14.9142L1.08582 12.0858L5.1716 8.00003Z"
-                    fill="#FFFFFF"></path>
-            </svg>
-        </button>
-    </h3>
+    </span>
 
-    </div>
+<button id="seeEvaluationBtn">
+  <p  data-text="See_Evaluation">See_Evaluation</p>
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M14 5l7 7m0 0l-7 7m7-7H3"
+    ></path>
+  </svg>
+</button>
+
+<button id="notInterestedBtn">
+  <p data-text="Not_Interested!">Not_Interested!</p>
+
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M14 5l7 7m0 0l-7 7m7-7H3"
+    ></path>
+  </svg>
+</button>
+</div>
 </div>

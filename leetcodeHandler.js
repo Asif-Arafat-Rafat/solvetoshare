@@ -14,7 +14,7 @@ window.addEventListener('LEETCODE_RESPONSE_READY', (event) => {
         if(event.detail.run_success){
                 const body = document.querySelector("body");
                 console.log("now showing banner");
-                showSuccess(body);
+                runPipeline(body);
         }
     } catch (error) {
         if (error.message.includes("Extension context invalidated")) {

@@ -31,9 +31,9 @@ async function successFullyResponded(body, aiCodeData) {
     if (postResponse) {
         postResponse.style.display = "flex"; // Immediate cleanup of loading banner to prevent collisions
     }
-    // if (htmlContent.includes("{ai_output}")) {
-    //     htmlContent = htmlContent.replace("{ai_output}", aiCodeData);
-    // }
+    if (htmlContent.includes("{ai_output}")) {
+        htmlContent = htmlContent.replace("{ai_output}", aiCodeData);
+    }
     const responseBanner = body.querySelector('#extension_banner');
     if (responseBanner) {
         responseBanner.style.transition = "opacity 0.5s ease-in-out";
@@ -60,7 +60,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             document.body.querySelector('#extension_banner')?.remove(); // Ensure any existing banner is removed to prevent collisions
             alert("⚠️ Gemini API is currently overloaded (503 Service Unavailable). Please try again in a few moments.");
             sendResponse({ status: "acknowledged" });
-            successFullyResponded(document.body, "Gemini API is currently overloaded. Please try again later.");
+            // successFullyResponded(document.body, "Gemini API is currently overloaded. Please try again later.");
             return;
         }
         if (message.status == 429) {
@@ -69,9 +69,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             sendResponse({ status: "acknowledged" });
             return;
         }
-        
         // 🌟 FIX 2: Correctly pass and map the AI payload text data
         successFullyResponded(document.body, message.code);
+        const showResponseBtn = document.querySelector("#seeEvaluationBtn");
+        const responseBanner = document.querySelector('#response_banner');
+        showResponseBtn.addEventListener("click", () => {
+            responseBanner.style.display = 'flex';
+        });
         sendResponse({ status: "rendered" });
     }
 });
