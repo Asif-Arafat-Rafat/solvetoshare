@@ -48,7 +48,7 @@ export async function evaluateMySolveGemini(solutionCode) {
             .replace("{isComplexityNeeded}", String(isComplexityNeeded))
             .replace("{isRatingNeeded}", String(isRatingNeeded));
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GeminiApiKey}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GeminiApiKey}`;
         
         const response = await fetch(url, {
             method: "POST",
@@ -62,10 +62,9 @@ export async function evaluateMySolveGemini(solutionCode) {
                 }
             })
         });
-
         const data = await response.json();
         console.log("Status:", response.status);
-
+        const ResStatus = response.status;
         // 🌟 Unified formatting for downstream API errors
         if (!response.ok) {
             const errMsg = `API ERROR ${response.status}: ${data?.error?.message || JSON.stringify(data)}`;
