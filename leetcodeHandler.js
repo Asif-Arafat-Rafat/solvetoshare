@@ -11,11 +11,15 @@ window.addEventListener('LEETCODE_RESPONSE_READY', (event) => {
             console.log("🔄 Extension was reloaded! Please refresh the page to reconnect the pipeline.");
             return;
         }
-        if(event.detail.run_success){
+        if(event.detail.run_success&& event.detail.task_name === "judger.judgetask.Judge"){
                 const body = document.querySelector("body");
                 console.log("now showing banner");
                 runPipeline(body);
         }
+        // else{
+        //     console.log(event.detail.task_name);
+        //     console.log("Received response from inject.js, but it indicates a failed run or missing question ID. Ignoring this event.");
+        // }
     } catch (error) {
         if (error.message.includes("Extension context invalidated")) {
             console.log("🔄 Extension context invalidated. A page refresh is required.");

@@ -38,7 +38,7 @@ make it like a json file the key in the what i did good and bad (there can be mo
 },
 "optimized_implementation": {
 "language": "The programming language used (e.g., C++)",
-"code": "The complete, refactored production-ready code block"
+"code": "The complete, refactored production-ready code block fully optimized and same using language as user"
 }
 }
 ignore all data that are false in the needed fields.
