@@ -47,9 +47,6 @@
                                 <input type="password" id="apiKeyInput"
                                     class="form-control"
                                     placeholder="••••••••••••••••">
-                                <button type="button" id="toggleKeyBtn"
-                                    class="icon-btn"
-                                    title="Toggle Visibility">👁️</button>
                             </div>
                         </div>
                     </section>
@@ -79,7 +76,21 @@
                     <hr class="divider">
                     <div id="ActiveArea">
                         <h1 id="activeModelTitle"></h1>
-                        <button id="logoutBtn" type="button"
+                            <div class="setting-row">
+                                <input type="checkbox" id="ratingAdd">
+                                <label for="ratingAdd">Add Rating</label>
+                            </div>
+
+                            <div class="setting-row">
+                                <input type="checkbox" id="complexityAdd">
+                                <label for="complexityAdd">Add Complexity</label>
+                            </div>
+
+                            <div class="setting-row" style="display:flex;align-items:center;justify-content:center;height: 40px;">
+                                <input type="checkbox" id="suggestionCode">
+                                <label for="suggestionCode">Add Suggestion Code</label>
+                            </div>                        
+                            <button id="logoutBtn" type="button"
                             class="btn-primary">Logout</button>
                     </div>
                     </main>

@@ -1,12 +1,12 @@
 // Inside banner.js
 
-async function check(){
+async function check() {
     const storage = await chrome.storage.session.get(["ApiStatus"]);
-    if (storage.ApiStatus == 429 || storage.ApiStatus == 401 || storage.ApiStatus == 503) {
+    if (storage.ApiStatus == 429 || storage.ApiStatus == 401 || storage.ApiStatus == 503 || storage.ApiStatus == 400) {
         showCustomError(`Previous request failed with status ${storage.ApiStatus}. Please try again later.`);
-        console.log(`Previous request failed with status ${storage.ApiStatus}. Banner will not display.`);
-        return false; 
-    } 
+        alert(`Previous request failed with status ${storage.ApiStatus}. Banner will not display.`);
+        return false;
+    }
     return true;
 }
 
@@ -15,15 +15,16 @@ function showCustomError(message) {
     const loadingText = document.querySelector("#loadingText");
     const loader = document.querySelector(".loader");
     const banner = document.querySelector("#extension_banner");
-    
-    if (loader) loader.style.display = 'none';
-    if (loadingText) {
-        loadingText.textContent = message;
-        loadingText.style.color = '#f87171'; // Red Error Alert Accent
-    }
-    if (banner) {
-        banner.style.border = '1px solid rgba(239, 68, 68, 0.4)';
-    }
+    console.log("Removing banner:");
+    if(banner) banner.remove(); // Ensure banner is visible to show the error message
+    // if (loader) loader.style.display = 'none';
+    // if (loadingText) {
+    //     loadingText.textContent = message;
+    //     loadingText.style.color = '#f87171'; // Red Error Alert Accent
+    // }
+    // if (banner) {
+    //     banner.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+    // }
 }
 
 async function showSuccess(body) {
@@ -46,7 +47,7 @@ async function showSuccess(body) {
 async function successFullyResponded(body, aiCodeData) {
     const postResponse = document.querySelector("#postResponse");
     const responseResult = document.querySelector("#evaluationResult");
-    
+
     if (postResponse) {
         postResponse.style.display = "flex"; // Swap pre-response view cleanly
     }
@@ -88,7 +89,7 @@ async function successFullyResponded(body, aiCodeData) {
             profile.areas_for_improvement.forEach(imp => {
                 const lineSection = imp.line ? `<div class="code-snippet">${escapeHtml(imp.line)}</div>` : '';
                 const suggestionSection = imp.suggestion ? `<div class="suggestion-box">💡 Suggestion: ${escapeHtml(imp.suggestion)}</div>` : '';
-                
+
                 htmlBuilder += `
                     <div class="improvement-card">
                         <div class="card-header-badge badge-improvement">
@@ -102,6 +103,7 @@ async function successFullyResponded(body, aiCodeData) {
                 `;
             });
         }
+        // if(profile.)
 
         responseResult.innerHTML = htmlBuilder;
     } else {
@@ -128,53 +130,59 @@ function escapeHtml(text) {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "AiResponse") {
         console.log("Got AI Response payload.", message);
-
+        console.log("Status code  1:", message.status);
         // Vaporize the loading banner instantly before displaying the actions container
         const loadingBanner = document.querySelector('#preResponse');
         if (loadingBanner) {
-            loadingBanner.style.display = 'none'; 
+            loadingBanner.style.display = 'none';
         }
-        
-        if (message.status == 503) {
+        if (message.status == 400) {
+            showCustomError("Recheck Api Key");
+            sendResponse({ status: "acknowledged" });
+            return;
+        }
+        else if (message.status == 503) {
             showCustomError("⚠️ Gemini API is currently overloaded (503 Service Unavailable). Please try again shortly.");
             sendResponse({ status: "acknowledged" });
             return;
         }
-        if (message.status == 429) {
+        else if (message.status == 429) {
             showCustomError("⚠️ You exceeded your current API quota limit.");
             sendResponse({ status: "acknowledged" });
             return;
         }
 
         // Populate results securely
-        successFullyResponded(document.body, message.code);
+        else {
+            successFullyResponded(document.body, message.code);
 
-        const showResponseBtn = document.querySelector("#seeEvaluationBtn");
-        const responseBanner = document.querySelector('#response_banner');
-        const cancelBtn = document.querySelector("#notInterestedBtn");
-        const closeModalBtn = document.querySelector("#closeModalBtn");
+            const showResponseBtn = document.querySelector("#seeEvaluationBtn");
+            const responseBanner = document.querySelector('#response_banner');
+            const cancelBtn = document.querySelector("#notInterestedBtn");
+            const closeModalBtn = document.querySelector("#closeModalBtn");
 
-        if (showResponseBtn && responseBanner) {
-            showResponseBtn.addEventListener("click", () => {
-                responseBanner.style.display = 'flex'; // Triggers smooth overlay block
-            });
+            if (showResponseBtn && responseBanner) {
+                showResponseBtn.addEventListener("click", () => {
+                    responseBanner.style.display = 'flex'; // Triggers smooth overlay block
+                });
+            }
+
+            if (closeModalBtn && responseBanner) {
+                closeModalBtn.addEventListener("click", () => {
+                    responseBanner.style.display = 'none';
+                });
+            }
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener("click", () => {
+                    // Instantly remove bottom bar wrapper
+                    document.querySelector('#extension_banner')?.remove();
+                    if (responseBanner) responseBanner.style.display = 'none';
+                });
+            }
+
+            sendResponse({ status: "rendered" });
         }
-
-        if (closeModalBtn && responseBanner) {
-            closeModalBtn.addEventListener("click", () => {
-                responseBanner.style.display = 'none';
-            });
-        }
-
-        if (cancelBtn) {
-            cancelBtn.addEventListener("click", () => {
-                // Instantly remove bottom bar wrapper
-                document.querySelector('#extension_banner')?.remove();
-                if (responseBanner) responseBanner.style.display = 'none';
-            });
-        }
-
-        sendResponse({ status: "rendered" });
     }
 });
 

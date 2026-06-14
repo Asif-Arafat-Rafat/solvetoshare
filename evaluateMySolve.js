@@ -48,20 +48,41 @@ export async function evaluateMySolveGemini(solutionCode) {
             .replace("{isComplexityNeeded}", String(isComplexityNeeded))
             .replace("{isRatingNeeded}", String(isRatingNeeded));
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GeminiApiKey}`;
-        
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
+        const url = [`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GeminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GeminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GeminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent?key=${GeminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro:generateContent?key=${GeminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${GeminiApiKey}`];
+        let response = await fetch(url[0], {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
                 contents: [{ parts: [{ text: promptText }] }],
                 generationConfig: {
                     responseMimeType: "application/json"
                 }
             })
         });
+        for(let i=1;i<url.length;i++){
+        if(response.status === 200){
+            break;
+        }    
+        response = await fetch(url[i], {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                contents: [{ parts: [{ text: promptText }] }],
+                generationConfig: {
+                    responseMimeType: "application/json"
+                }
+            })
+        });
+    }
         const data = await response.json();
         console.log("Status:", response.status);
         const ResStatus = response.status;
